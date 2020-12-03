@@ -92,8 +92,6 @@ def create_app(test_config=None):
         abort(400)
 
       question.delete()
-      #selection = Book.query.order_by(Book.id).all()
-      #current_books = paginate_books(request, selection)
 
       return retrieve_questions()
 
@@ -126,19 +124,21 @@ def create_app(test_config=None):
         questions = Question.query.order_by(Question.id).filter(Question.question.ilike('%{}%'.format(search)))
 
         if not questions:
-          abort(400)
+          abort(404)
 
         current_questions = paginate_questions(request, questions)
 
         if len(current_questions) == 0:
           abort(404)
 
+        selected = [question.format() for question in questions]
+
         return jsonify({
           'success': True,
           'questions': current_questions,
           'categories': retrieve_categories(),
           'currentCategory': search,
-          'total_questions': len(Question.query.all())
+          'total_questions': len(selected)
         }) 
 
       else:
@@ -200,6 +200,35 @@ def create_app(test_config=None):
   one question at a time is displayed, the user is allowed to answer
   and shown whether they were correct or not. 
   '''
+  @app.route('/quizzes', methods=['POST'])
+  def get_next_question():
+    print("HERE")
+    body = request.get_json()
+
+    previous_questions = body.get('previous_questions', None)
+    quiz_category = body.get('quiz_category', None)
+
+    if quiz_category is None:
+      question = Question.query.filter(Question.id == 3).one_or_none()
+
+      if question is None:
+        abort(400)
+
+      print("Good")
+
+    else:
+      question = Question.query.filter(Question.id == 3).one_or_none()
+
+      if question is None:
+        abort(400)
+
+      print(question.answer)
+
+    return jsonify({
+      'id': question.id,
+      'question': question.question,
+      'answer': question.answer
+    }) 
 
   '''
   @TODO: 
@@ -220,7 +249,7 @@ def create_app(test_config=None):
     return jsonify({
       "success": False,
       "error": 404,
-      "message": "There are no questions for this category"
+      "message": "There are no questions for this request"
     }), 404
 
   @app.errorhandler(422)
