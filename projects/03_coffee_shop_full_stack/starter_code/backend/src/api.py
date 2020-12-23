@@ -28,10 +28,9 @@ db_drop_and_create_all()
         or appropriate status code indicating reason for failure
 '''
 @app.route('/drinks')
-def headers():
-    auth_header = request.headers['Authorization']
-    print(auth_header)
-    return 'Auth Processed'
+def drinks_processed():
+    print('Drinks Processed')
+    return 'Drinks Processed'
 
 '''
 @TODO implement endpoint
@@ -42,10 +41,9 @@ def headers():
         or appropriate status code indicating reason for failure
 '''
 @app.route('/drinks-detail')
-def drinksdetail():
-    auth_header = request.headers['Authorization']
-    print(auth_header)
-    return 'Auth Processed'
+def drinksdetails_processed():
+    print('DrinksDetails Processed')
+    return 'DrinksDetails Processed'
 
 '''
 @TODO implement endpoint
@@ -56,8 +54,10 @@ def drinksdetail():
     returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the newly created drink
         or appropriate status code indicating reason for failure
 '''
-
-
+@app.route('/drinks', methods=['POST'])
+def drinks_processed():
+    print('Drinks Post Processed')
+    return 'Drinks Post Processed'
 '''
 @TODO implement endpoint
     PATCH /drinks/<id>
@@ -69,8 +69,11 @@ def drinksdetail():
     returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the updated drink
         or appropriate status code indicating reason for failure
 '''
-
-
+@app.route('/drinks/<int:drinks_id>', methods=['PATCH'])
+def drinks_processed(drinks_id):
+    print('Drinks PATCH Processed')
+    return 'Drinks Patch Processed'
+ 
 '''
 @TODO implement endpoint
     DELETE /drinks/<id>
