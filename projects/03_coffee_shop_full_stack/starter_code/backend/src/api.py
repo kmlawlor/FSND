@@ -16,7 +16,7 @@ CORS(app)
 !! NOTE THIS WILL DROP ALL RECORDS AND START YOUR DB FROM SCRATCH
 !! NOTE THIS MUST BE UNCOMMENTED ON FIRST RUN
 '''
-# db_drop_and_create_all()
+db_drop_and_create_all()
 
 ## ROUTES
 '''
@@ -27,17 +27,25 @@ CORS(app)
     returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
         or appropriate status code indicating reason for failure
 '''
-
+@app.route('/drinks')
+def headers():
+    auth_header = request.headers['Authorization']
+    print(auth_header)
+    return 'Auth Processed'
 
 '''
 @TODO implement endpoint
     GET /drinks-detail
         it should require the 'get:drinks-detail' permission
-        it should contain the drink.long() data representation
+        it should contain the drink.long() data   representation
     returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
         or appropriate status code indicating reason for failure
 '''
-
+@app.route('/drinks-detail')
+def drinksdetail():
+    auth_header = request.headers['Authorization']
+    print(auth_header)
+    return 'Auth Processed'
 
 '''
 @TODO implement endpoint
