@@ -1,12 +1,13 @@
 import os
 from sqlalchemy import Column, String, Integer
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 import json
 
-database_filename = "database.db"
+database_filename = "database.db"  
 project_dir = os.path.dirname(os.path.abspath(__file__))
 #database_path = "sqlite:///{}".format(os.path.join(project_dir, database_filename))
-#database_name = "coffeeshop"
+#database_filename = "coffeeshop"
 database_path = "postgresql://{}/{}".format('postgres:admin@localhost:5432', database_filename)
 
 db = SQLAlchemy()
@@ -20,6 +21,7 @@ def setup_db(app):
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app
     db.init_app(app)
+    migrate = Migrate(app, db)
 
 '''
 db_drop_and_create_all()
