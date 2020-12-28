@@ -55,9 +55,9 @@ def drinksdetails_processed():
         or appropriate status code indicating reason for failure
 '''
 @app.route('/drinks', methods=['POST'])
-def drinks_processed():
-    print('Drinks Post Processed')
-    return 'Drinks Post Processed'
+def drinks_newprocessed():
+    print('Drinks Post New Processed')
+    return 'Drinks Post New Processed'
 '''
 @TODO implement endpoint
     PATCH /drinks/<id>
@@ -69,10 +69,10 @@ def drinks_processed():
     returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the updated drink
         or appropriate status code indicating reason for failure
 '''
-@app.route('/drinks/<int:drinks_id>', methods=['PATCH'])
-def drinks_processed(drinks_id):
-    print('Drinks PATCH Processed')
-    return 'Drinks Patch Processed'
+@app.route('/drinks/<int:drinks_id>', methods=['POST'])
+def drinks_update(drinks_id):
+    print('Drinks PATCH Update')
+    return 'Drinks Patch Update'
  
 '''
 @TODO implement endpoint
