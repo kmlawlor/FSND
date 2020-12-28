@@ -29,7 +29,8 @@ CORS(app)
 '''
 @app.route('/drinks')
 def retrieve_drinks():
-    current_drinks = Drink.query.order_by(Drink.id).all()
+    #current_drinks = Drink.query.order_by(Drink.id).all()
+    current_drinks = [drink.short() for drink in Drink.query.all()]
 
     if len(current_drinks) == 0:
         abort(404)
@@ -39,7 +40,7 @@ def retrieve_drinks():
     return jsonify({
         'success': True,
         'drinks': current_drinks
-    })
+    }), 200
 
 '''
 @TODO implement endpoint
