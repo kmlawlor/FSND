@@ -26,11 +26,11 @@ CORS(app)
         it should contain only the drink.short() data representation
     returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
         or appropriate status code indicating reason for failure
-'''
+        current_drinks = Drink.query.order_by(Drink.id).all()
+
 @app.route('/drinks')
 def retrieve_drinks():
-    #current_drinks = Drink.query.order_by(Drink.id).all()
-    current_drinks = [drink.short() for drink in Drink.query.all()]
+    current_drinks = Drink.query.order_by(Drink.id).all()
 
     if len(current_drinks) == 0:
         abort(404)
@@ -40,7 +40,14 @@ def retrieve_drinks():
     return jsonify({
         'success': True,
         'drinks': current_drinks
-    }), 200
+    })
+'''
+@app.route('/drinks')
+def drinks():
+    drinks = [drink.short() for drink in Drink.query.all()]
+    if len(drinks) == 0:
+        abort(404)
+    return jsonify({"success": True, "drinks": drinks}), 200
 
 '''
 @TODO implement endpoint
