@@ -16,7 +16,7 @@ CORS(app)
 !! NOTE THIS WILL DROP ALL RECORDS AND START YOUR DB FROM SCRATCH
 !! NOTE THIS MUST BE UNCOMMENTED ON FIRST RUN
 '''
-#db_drop_and_create_all()
+db_drop_and_create_all()
 
 ## ROUTES
 '''
@@ -27,7 +27,7 @@ CORS(app)
     returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
         or appropriate status code indicating reason for failure
         current_drinks = Drink.query.order_by(Drink.id).all()
-'''
+
 @app.route('/drinks')
 def retrieve_drinks():
     current_drinks = Drink.query.order_by(Drink.id).all()
@@ -42,12 +42,12 @@ def retrieve_drinks():
     return True
 '''
 @app.route('/drinks')   
-def drinks():
+def retrieve_drinks():
     drinks = [drink.short() for drink in Drink.query.all()]
     if len(drinks) == 0:
         abort(404)
     return jsonify({"success": True, "drinks": drinks}), 200
-
+'''
 @TODO implement endpoint
     GET /drinks-detail
         it should require the 'get:drinks-detail' permission
@@ -142,7 +142,7 @@ def no_drinks(error):
     return jsonify({
         "success": False,
         "error": 404, 
-         "message": "Drink not found"
+         "message": "Drinks are not found"
     }), 404
 
 @app.errorhandler(400)
