@@ -21,7 +21,7 @@ Uncomment the following line to initialize the datbase
 '''
 Implement the public get drinks endpoint
 '''
-@app.route('/drinks2')
+@app.route('/drinks')
 def retrieve_drinks():
     current_drinks = Drink.query.order_by(Drink.id).all()
 
@@ -29,55 +29,53 @@ def retrieve_drinks():
         abort(404)
 
     print('Drinks Retrieved:' + str(len(Drink.query.all())))
-    drinks = {}
+    drinks = []
     for drink in current_drinks:
-            print(drink.recipe)
-            drinks[drink.title] = drink.recipe
+        print(drink.recipe)
+        d = Drink()
+        d.title = drink.title
+        d.recipe = drink.recipe
+        drinks.append(d.short())
  
     return jsonify({"success": True, "drinks": drinks}), 200
 
-@app.route('/drinks')   
-def drinks():
-    print('Drinks Retrieved:' + str(len(Drink.query.all())))
-    drinks = [drink.short() for drink in Drink.query.all()]
-    print('Drinks Retrieved:' + str(len(Drink.query.all())))
-    if len(drinks) == 0:
-        abort(404)
-    return jsonify({"success": True, "drinks": drinks}), 200
 '''
 Implement get drink detail endpoint
 '''
 @app.route('/drinks-detail')
-@requires_auth('get:drinks-detail')
+#@requires_auth('get:drinks-detail')
 def drinksdetails_processed():
     current_drinks = Drink.query.order_by(Drink.id).all()
 
     if len(current_drinks) == 0:
         abort(404)
 
-    drinks = {}
+    print('Drinks Retrieved:' + str(len(Drink.query.all())))
+    drinks = []
     for drink in current_drinks:
-            print(drink.recipe)
-            drinks[drink.title] = drink.long()
-
+        print(drink.recipe)
+        d = Drink()
+        d.title = drink.title
+        d.recipe = drink.recipe
+        drinks.append(d.long())
+ 
     return jsonify({"success": True, "code": 200, "drinks": drinks})
 
 '''
 Implement create drink endpoint
 '''
 @app.route('/drinks', methods=['POST'])
-@requires_auth('post:drinks')
+#@requires_auth('post:drinks')
 def create_drink():   
     body = request.get_json()
 
-    new_title = body.get('title', None)
-    new_recipe = json.dumps(body.get('recipe', None))
+    #new_title = body.get('title', None)
+    #new_recipe = json.dumps(body.get('recipe', None))
 
     try:
-        drink = Drink(title=new_title, recipe=new_recipe)
+        drink = Drink(title='new_title3', recipe="'color': 'blue', 'parts': '5'")
         drink.insert()
 
-        #retrieve_drinks()
         return jsonify({"success": True, "drinks": drink.long()}), 200
     
     except:
