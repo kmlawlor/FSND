@@ -27,7 +27,7 @@ CORS(app)
     returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
         or appropriate status code indicating reason for failure
         current_drinks = Drink.query.order_by(Drink.id).all()
-
+'''
 @app.route('/drinks')
 def retrieve_drinks():
     current_drinks = Drink.query.order_by(Drink.id).all()
@@ -36,20 +36,18 @@ def retrieve_drinks():
         abort(404)
 
     print('Drinks Retrieved:' + str(len(Drink.query.all())))
-
-    return jsonify({
-        'success': True,
-        'drinks': current_drinks
-    })
+    for drink in current_drinks:
+            print(drink.id)
+ 
+    return True
 '''
-@app.route('/drinks')
+@app.route('/drinks')   
 def drinks():
     drinks = [drink.short() for drink in Drink.query.all()]
     if len(drinks) == 0:
         abort(404)
     return jsonify({"success": True, "drinks": drinks}), 200
 
-'''
 @TODO implement endpoint
     GET /drinks-detail
         it should require the 'get:drinks-detail' permission
@@ -75,13 +73,14 @@ def drinksdetails_processed():
 def create_drink():
     body = request.get_json()
 
-    new_title = body.get('title', None)
-    new_recipe = body.get('recipe', None)
+    new_title = body.get('req_title', None)
+    new_recipe = body.get('req_recipe', None)
 
     try:
-        drink = Drink(title='new_title', recipe=new_recipe)
-
+        drink = Drink(title=new_title, recipe=new_recipe)
         drink.insert()
+
+        return retrieve_drinks()
     
     except:
         abort(422)
@@ -111,7 +110,20 @@ def drinks_update(drinks_id):
     returns status code 200 and json {"success": True, "delete": id} where id is the id of the deleted record
         or appropriate status code indicating reason for failure
 '''
+@app.route('/drinks/<int:drink_id>', methods=['DELETE'])
+def delete_drink(drink_id):
+    try:
+        drink = Drink.query.filter(Drink.id == drink_id).one_or_none()
 
+        if drink is None:
+            abort(400)
+
+        drink.delete()
+
+        return retrieve_drinks()
+
+    except:
+        abort(422)
 
 ## Error Handling
 '''
@@ -129,10 +141,17 @@ def unprocessable(error):
 def no_drinks(error):
     return jsonify({
         "success": False,
-        "error": 404,
-        "message": "There are no drinks in the db"
+        "error": 404, 
+         "message": "Drink not found"
     }), 404
 
+@app.errorhandler(400)
+def drink_not_found(error):
+    return jsonify({
+        "success": False,
+        "error": 400,
+        "message": "Cannot delete, drink not found"
+    }), 400
 '''
 @TODO implement error handler for AuthError
     error handler should conform to general task above 
