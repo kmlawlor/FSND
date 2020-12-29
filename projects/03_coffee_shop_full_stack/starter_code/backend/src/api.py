@@ -16,7 +16,7 @@ CORS(app)
 !! NOTE THIS WILL DROP ALL RECORDS AND START YOUR DB FROM SCRATCH
 !! NOTE THIS MUST BE UNCOMMENTED ON FIRST RUN
 '''
-db_drop_and_create_all()
+#db_drop_and_create_all()
 
 ## ROUTES
 '''
@@ -27,8 +27,8 @@ db_drop_and_create_all()
     returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
         or appropriate status code indicating reason for failure
         current_drinks = Drink.query.order_by(Drink.id).all()
-
-@app.route('/drinks')
+'''
+@app.route('/drinks2')
 def retrieve_drinks():
     current_drinks = Drink.query.order_by(Drink.id).all()
 
@@ -36,14 +36,18 @@ def retrieve_drinks():
         abort(404)
 
     print('Drinks Retrieved:' + str(len(Drink.query.all())))
+    drinks = {}
     for drink in current_drinks:
-            print(drink.id)
+            print(drink.recipe)
+            drinks[drink.title] = drink.recipe
  
-    return True
-'''
+    return jsonify({"success": True, "drinks": drinks}), 200
+
 @app.route('/drinks')   
-def retrieve_drinks():
+def drinks():
+    print('Drinks Retrieved:' + str(len(Drink.query.all())))
     drinks = [drink.short() for drink in Drink.query.all()]
+    print('Drinks Retrieved:' + str(len(Drink.query.all())))
     if len(drinks) == 0:
         abort(404)
     return jsonify({"success": True, "drinks": drinks}), 200
@@ -62,7 +66,7 @@ def drinksdetails_processed():
 
 '''
 @TODO implement endpoint
-    POST /drinks
+    POST /drink s
         it should create a new row in the drinks table
         it should require the 'post:drinks' permission
         it should contain the drink.long() data representation
@@ -71,16 +75,20 @@ def drinksdetails_processed():
 '''
 @app.route('/drinks', methods=['POST'])
 def create_drink():
-    body = request.get_json()
+    data = request.get_json()
 
-    new_title = body.get('req_title', None)
-    new_recipe = body.get('req_recipe', None)
+    new_title = data['title']
+    #print('Drink Retrieved:' + new_title)
+    new_recipe = data['recipe']
+    #new_recipe = "'color': 'green', 'parts': '4'"
+    print('Drink Recipe:' + str(new_recipe))
 
     try:
         drink = Drink(title=new_title, recipe=new_recipe)
         drink.insert()
 
-        return retrieve_drinks()
+        retrieve_drinks()
+        #return jsonify({"success": True, "drinks": drink}), 200
     
     except:
         abort(422)
@@ -95,7 +103,7 @@ def create_drink():
     returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the updated drink
         or appropriate status code indicating reason for failure
 '''
-@app.route('/drinks/<int:drinks_id>', methods=['POST'])
+@app.route('/drinks/<int:drinks_id>', methods=['PATCH'])
 def drinks_update(drinks_id):
     print('Drinks PATCH Update')
     return 'Drinks Patch Update'
