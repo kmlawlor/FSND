@@ -22,7 +22,8 @@ Uncomment the following line to initialize the datbase
 Implement the public get drinks endpoint
 '''
 @app.route('/drinks')
-def retrieve_drinks():
+@requires_auth('get:drinks')
+def retrieve_drinks(payload):
     current_drinks = Drink.query.order_by(Drink.id).all()
 
     if len(current_drinks) == 0:
@@ -44,7 +45,7 @@ Implement get drink detail endpoint
 '''
 @app.route('/drinks-detail')
 @requires_auth('get:drinks-detail')
-def drinksdetails_processed():
+def drinksdetails_processed(payload):
     current_drinks = Drink.query.order_by(Drink.id).all()
 
     if len(current_drinks) == 0:
@@ -66,14 +67,14 @@ Implement create drink endpoint
 '''
 @app.route('/drinks', methods=['POST'])
 @requires_auth('post:drinks')
-def create_drink():   
+def create_drink(payload):   
     body = request.get_json()
 
-    #new_title = body.get('title', None)
-    #new_recipe = json.dumps(body.get('recipe', None))
+    new_title = body.get('title', None)
+    new_recipe = json.dumps(body.get('recipe', None))
 
     try:
-        drink = Drink(title='new_title3', recipe="'color': 'blue', 'parts': '5'")
+        drink = Drink(title=new_title, recipe=new_recipe)
         drink.insert()
 
         return jsonify({"success": True, "drinks": drink.long()}), 200
@@ -83,24 +84,25 @@ def create_drink():
 '''
 Implement update endpoint
 '''
-@app.route('/drinks/<int:drinks_id>', methods=['PATCH'])
+@app.route('/drinks/<int:drink_id>', methods=['PATCH'])
 @requires_auth('patch:drinks')
-def drinks_update(drink_title):
+def drinks_update(payload, drink_id):
     try:
         body = request.get_json()
 
-        old_title = body.get('title', None)
+        new_title = body.get('title', None)
         new_recipe = json.dumps(body.get('recipe', None))
 
-        drink = Drink.query.filter(Drink.title == old_title).one_or_none()
+        drink = Drink.query.filter(Drink.id == drink_id).one_or_none()
 
         if drink is None:
             abort(400)
 
+        drink.title = new_title
         drink.recipe = new_recipe
         drink.update()
 
-        return retrieve_drinks()
+        return jsonify({"success": True, "drinks": drink.long()}), 200
 
     except:
         abort(422)
@@ -110,8 +112,10 @@ Delete endpoint
 '''
 @app.route('/drinks/<int:drink_id>', methods=['DELETE'])
 @requires_auth('delete:drinks')
-def delete_drink(drink_id):
+def delete_drink(payload, drink_id):
     try:
+        print("Payload----------->" + str(payload))
+        print("DrinkId----------->" + str(drink_id))
         drink = Drink.query.filter(Drink.id == drink_id).one_or_none()
 
         if drink is None:

@@ -1,7 +1,7 @@
 import json
 from flask import request, _request_ctx_stack
 from functools import wraps
-from jose import jwtfabort
+from jose import jwt
 from urllib.request import urlopen
 
 AUTH0_DOMAIN = 'kml.us.auth0.com'
@@ -142,8 +142,8 @@ def requires_auth(permission=''):
                 payload = verify_decode_jwt(token)
             except:
                 raise AuthError({
-                    'code': 'token_expired',
-                    'description': 'Token expired.'
+                    'code': 'invalid_header',
+                    'description': 'Verify Decode JWT Exception.'
                 }, 401)
 
             check_permissions(permission, payload)
