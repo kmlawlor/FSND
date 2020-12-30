@@ -43,7 +43,7 @@ def retrieve_drinks():
 Implement get drink detail endpoint
 '''
 @app.route('/drinks-detail')
-#@requires_auth('get:drinks-detail')
+@requires_auth('get:drinks-detail')
 def drinksdetails_processed():
     current_drinks = Drink.query.order_by(Drink.id).all()
 
@@ -65,7 +65,7 @@ def drinksdetails_processed():
 Implement create drink endpoint
 '''
 @app.route('/drinks', methods=['POST'])
-#@requires_auth('post:drinks')
+@requires_auth('post:drinks')
 def create_drink():   
     body = request.get_json()
 
