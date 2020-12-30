@@ -15,7 +15,7 @@ CORS(app)
 Uncomment the following line to initialize the datbase
 !! NOTE THIS WILL DROP ALL RECORDS AND START YOUR DB FROM SCRATCH
 '''
-#db_drop_and_create_all()
+db_drop_and_create_all()
 
 ## ROUTES
 '''
@@ -23,7 +23,7 @@ Implement the public get drinks endpoint
 '''
 @app.route('/drinks')
 @requires_auth('get:drinks')
-def retrieve_drinks(payload):
+def retrieve_drinks():
     current_drinks = Drink.query.order_by(Drink.id).all()
 
     if len(current_drinks) == 0:
@@ -67,11 +67,9 @@ Implement create drink endpoint
 '''
 @app.route('/drinks', methods=['POST'])
 @requires_auth('post:drinks')
-def create_drink(payload):   
-    body = request.get_json()
-
-    new_title = body.get('title', None)
-    new_recipe = json.dumps(body.get('recipe', None))
+def create_drink():   
+    new_title = request.form.get('title')
+    new_recipe = json.dumps(request.form.get('recipe'))
 
     try:
         drink = Drink(title=new_title, recipe=new_recipe)
@@ -81,6 +79,7 @@ def create_drink(payload):
     
     except:
         abort(422)
+
 '''
 Implement update endpoint
 '''
