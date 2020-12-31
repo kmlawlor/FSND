@@ -23,7 +23,7 @@ Implement the public get drinks endpoint
 '''
 @app.route('/drinks')
 @requires_auth('get:drinks')
-def retrieve_drinks():
+def retrieve_drinks(payload):
     current_drinks = Drink.query.order_by(Drink.id).all()
 
     if len(current_drinks) == 0:
@@ -69,7 +69,7 @@ Implement create drink endpoint
 '''
 @app.route('/drinks', methods=['POST'])
 @requires_auth('post:drinks')
-def create_drink():   
+def create_drink(payload):   
     new_title = request.form.get('title')
     new_recipe = json.dumps(request.form.get('recipe'))
 
