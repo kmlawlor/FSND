@@ -15,7 +15,7 @@ CORS(app)
 Uncomment the following line to initialize the datbase
 !! NOTE THIS WILL DROP ALL RECORDS AND START YOUR DB FROM SCRATCH
 '''
-db_drop_and_create_all()
+#db_drop_and_create_all()
 
 ## ROUTES
 '''
@@ -34,11 +34,12 @@ def retrieve_drinks():
     for drink in current_drinks:
         print(drink.recipe)
         d = Drink()
+        d.id = drink.id
         d.title = drink.title
-        d.recipe = drink.recipe
+        d.recipe = drink.recipe if type(drink.recipe) == str else json.dumps(drink.recipe)
         drinks.append(d.short())
  
-    return jsonify({"success": True, "drinks": drinks}), 200
+    return jsonify({"success": True, "code": 200, "drinks": drinks})
 
 '''
 Implement get drink detail endpoint
@@ -56,6 +57,7 @@ def drinksdetails_processed(payload):
     for drink in current_drinks:
         print(drink.recipe)
         d = Drink()
+        d.id = drink.id
         d.title = drink.title
         d.recipe = drink.recipe
         drinks.append(d.long())
@@ -87,12 +89,10 @@ Implement update endpoint
 @requires_auth('patch:drinks')
 def drinks_update(payload, drink_id):
     try:
-        body = request.get_json()
+        new_title = request.form.get('title')
+        new_recipe = json.dumps(request.form.get('recipe'))
 
-        new_title = body.get('title', None)
-        new_recipe = json.dumps(body.get('recipe', None))
-
-        drink = Drink.query.filter(Drink.id == drink_id).one_or_none()
+        drink = Drink.query.filter(Drink.id == 12).one_or_none()
 
         if drink is None:
             abort(400)
@@ -113,8 +113,6 @@ Delete endpoint
 @requires_auth('delete:drinks')
 def delete_drink(payload, drink_id):
     try:
-        print("Payload----------->" + str(payload))
-        print("DrinkId----------->" + str(drink_id))
         drink = Drink.query.filter(Drink.id == drink_id).one_or_none()
 
         if drink is None:
