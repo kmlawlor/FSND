@@ -23,7 +23,7 @@ Implement the public get drinks endpoint
 '''
 @app.route('/drinks')
 @requires_auth('get:drinks')
-def retrieve_drinks(payload):
+def retrieve_drinks(payload ):
     current_drinks = Drink.query.order_by(Drink.id).all()
 
     if len(current_drinks) == 0:
@@ -77,7 +77,8 @@ def create_drink(payload):
         drink = Drink(title=new_title, recipe=new_recipe)
         drink.insert()
 
-        return jsonify({"success": True, "drinks": drink.long()}), 200
+        #return jsonify({"success": True, "drinks": drink.long()}), 200
+        return jsonify({"success": True, "drinks": [drink.long()]}), 200
     
     except:
         abort(422)
