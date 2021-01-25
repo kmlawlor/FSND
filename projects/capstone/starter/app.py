@@ -263,7 +263,6 @@ def no_actors(error):
 
 @app.errorhandler(418)
 def actor_not_found(error):
-    print(error)
     return jsonify({
         "success": False,
         "error":418,

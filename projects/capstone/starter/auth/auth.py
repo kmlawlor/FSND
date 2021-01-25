@@ -103,7 +103,6 @@ def verify_decode_jwt(token):
             }
     if rsa_key:
         try:
-            print("trying")
             payload = jwt.decode(
                 token,
                 rsa_key,
