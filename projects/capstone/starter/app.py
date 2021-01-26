@@ -15,7 +15,7 @@ CORS(app)
 Uncomment the following line to initialize the datbase
 !! NOTE THIS WILL DROP ALL RECORDS AND START YOUR DB FROM SCRATCH
 '''
-#db_drop_and_create_all()
+db_drop_and_create_all()
 
 ## ROUTES
 @app.route('/headers')
