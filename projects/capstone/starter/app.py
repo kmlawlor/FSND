@@ -131,8 +131,8 @@ def delete_actor(payload,actor_id):
 Implement the public get movies endpoint
 '''
 @app.route('/movies')
-#@requires_auth('get:movies')
-def retrieve_movies():
+@requires_auth('get:movies')
+def retrieve_movies(payload):
     current_movies = Movie.query.order_by(Movie.title).all()
 
     if len(current_movies) == 0:
@@ -158,17 +158,14 @@ def retrieve_movies():
 Implement create movie endpoint
 '''
 @app.route('/movies', methods=['POST'])
-#@requires_auth('post:movies')
-def create_movie():   
+@requires_auth('post:movies')
+def create_movie(payload):   
     new_title = request.form.get('title')
     new_release_date = request.form.get('release_date')
  
     try:
-        print("Trying")
         movie = Movie(title=new_title, release_date=new_release_date)
-        print("Still Trying")
         movie.insert()
-        print("Tried")
 
         return movie.title + " added"
     
@@ -180,8 +177,8 @@ def create_movie():
 Implement update movies endpoint
 '''
 @app.route('/movies/<int:movie_id>', methods=['PATCH'])
-#@requires_auth('patch:movies')
-def movies_update(movie_id):
+@requires_auth('patch:movies')
+def movies_update(payload,movie_id):
     try:
         new_title = request.form.get('title')
         new_release_date = request.form.get('release_date')
@@ -206,8 +203,8 @@ def movies_update(movie_id):
 Delete endpoint
 '''
 @app.route('/movies/<int:movie_id>', methods=['DELETE'])
-#@requires_auth('delete:movies')
-def delete_movie(movie_id):
+@requires_auth('delete:movies')
+def delete_movie(payload,movie_id):
     try:
         movie = Movie.query.filter(Movie.id == movie_id).one_or_none()
 

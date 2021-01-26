@@ -4,12 +4,12 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import json
 
-#database_filename = "database.db"  
-#project_dir = os.path.dirname(os.path.abspath(__file__))
-#database_path = "sqlite:///{}".format(os.path.join(project_dir, database_filename))
+database_filename = "database.db"  
+project_dir = os.path.dirname(os.path.abspath(__file__))
+database_path = "sqlite:///{}".format(os.path.join(project_dir, database_filename))
 
-database_name = "capstone"
-database_path = "postgresql://{}/{}".format('postgres:admin@localhost:5432', database_name)
+#database_name = "capstone"
+#database_path = "postgresql://{}/{}".format('postgres:admin@localhost:5432', database_name)
 
 db = SQLAlchemy()
 
@@ -58,7 +58,6 @@ class Actor(db.Model):
             actor.insert()
     '''
     def insert(self):
-        print("here")
         db.session.add(self)
         db.session.commit()
 
